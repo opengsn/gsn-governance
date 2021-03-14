@@ -126,9 +126,10 @@ contract GovernorAlpha is BaseRelayRecipient {
     /// @notice An event emitted when a proposal has been executed in the Timelock
     event ProposalExecuted(uint id);
 
-    constructor(address timelock_, address uni_) public {
+    constructor(address timelock_, address uni_, address trustedForwarder_) public {
         timelock = TimelockInterface(timelock_);
         uni = UniInterface(uni_);
+        trustedForwarder = trustedForwarder_;
     }
 
     function propose(address[] memory targets, uint[] memory values, string[] memory signatures, bytes[] memory calldatas, string memory description) public returns (uint) {

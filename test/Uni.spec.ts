@@ -18,6 +18,9 @@ const PERMIT_TYPEHASH = utils.keccak256(
   utils.toUtf8Bytes('Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)')
 )
 
+// trusted forwarder address for GSN support. can be left address(0) to skip GSN support
+const trustedForwarder = '0x0000000000000000000000000000000000000000'
+
 describe('Uni', () => {
   const provider = new MockProvider({
     ganacheOptions: {
@@ -98,7 +101,7 @@ describe('Uni', () => {
 
   it('mints', async () => {
     const { timestamp: now } = await provider.getBlock('latest')
-    const uni = await deployContract(wallet, Uni, [wallet.address, wallet.address, now + 60 * 60])
+    const uni = await deployContract(wallet, Uni, [wallet.address, wallet.address, now + 60 * 60, trustedForwarder])
     const supply = await uni.totalSupply()
 
     await expect(uni.mint(wallet.address, 1)).to.be.revertedWith('Uni::mint: minting not allowed yet')
