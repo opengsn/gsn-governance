@@ -1,14 +1,15 @@
 pragma solidity ^0.5.16;
 pragma experimental ABIEncoderV2;
 
+import "./BaseRelayRecipient.sol";
 import "./SafeMath.sol";
 
-contract Uni {
+contract Uni is BaseRelayRecipient {
     /// @notice EIP-20 token name for this token
-    string public constant name = "Uniswap";
+    string public constant name = "GSN Token";
 
     /// @notice EIP-20 token symbol for this token
-    string public constant symbol = "UNI";
+    string public constant symbol = "GSN";
 
     /// @notice EIP-20 token decimals for this token
     uint8 public constant decimals = 18;
@@ -82,14 +83,14 @@ contract Uni {
      * @param minter_ The account with minting ability
      * @param mintingAllowedAfter_ The timestamp after which minting may occur
      */
-    constructor(address account, address minter_, uint mintingAllowedAfter_) public {
+    constructor(address account, address minter_, uint mintingAllowedAfter_, address trustedForwarder_) public {
         require(mintingAllowedAfter_ >= block.timestamp, "Uni::constructor: minting can only begin after deployment");
-
         balances[account] = uint96(totalSupply);
         emit Transfer(address(0), account, totalSupply);
         minter = minter_;
         emit MinterChanged(address(0), minter);
         mintingAllowedAfter = mintingAllowedAfter_;
+        trustedForwarder = trustedForwarder_;
     }
 
     /**
@@ -154,9 +155,9 @@ contract Uni {
             amount = safe96(rawAmount, "Uni::approve: amount exceeds 96 bits");
         }
 
-        allowances[msg.sender][spender] = amount;
+        allowances[_msgSender()][spender] = amount;
 
-        emit Approval(msg.sender, spender, amount);
+        emit Approval(_msgSender(), spender, amount);
         return true;
     }
 
@@ -208,7 +209,7 @@ contract Uni {
      */
     function transfer(address dst, uint rawAmount) external returns (bool) {
         uint96 amount = safe96(rawAmount, "Uni::transfer: amount exceeds 96 bits");
-        _transferTokens(msg.sender, dst, amount);
+        _transferTokens(_msgSender(), dst, amount);
         return true;
     }
 
@@ -220,7 +221,7 @@ contract Uni {
      * @return Whether or not the transfer succeeded
      */
     function transferFrom(address src, address dst, uint rawAmount) external returns (bool) {
-        address spender = msg.sender;
+        address spender = _msgSender();
         uint96 spenderAllowance = allowances[src][spender];
         uint96 amount = safe96(rawAmount, "Uni::approve: amount exceeds 96 bits");
 
@@ -240,7 +241,7 @@ contract Uni {
      * @param delegatee The address to delegate votes to
      */
     function delegate(address delegatee) public {
-        return _delegate(msg.sender, delegatee);
+        return _delegate(_msgSender(), delegatee);
     }
 
     /**

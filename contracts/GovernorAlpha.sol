@@ -1,9 +1,11 @@
 pragma solidity ^0.5.16;
 pragma experimental ABIEncoderV2;
 
-contract GovernorAlpha {
+import "./BaseRelayRecipient.sol";
+
+contract GovernorAlpha is BaseRelayRecipient {
     /// @notice The name of this contract
-    string public constant name = "Uniswap Governor Alpha";
+    string public constant name = "GSN Governor Alpha";
 
     /// @notice The number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed
     function quorumVotes() public pure returns (uint) { return 40_000_000e18; } // 4% of Uni
@@ -130,12 +132,13 @@ contract GovernorAlpha {
     }
 
     function propose(address[] memory targets, uint[] memory values, string[] memory signatures, bytes[] memory calldatas, string memory description) public returns (uint) {
-        require(uni.getPriorVotes(msg.sender, sub256(block.number, 1)) > proposalThreshold(), "GovernorAlpha::propose: proposer votes below proposal threshold");
+        address msgSender = _msgSender();
+        require(uni.getPriorVotes(msgSender, sub256(block.number, 1)) > proposalThreshold(), "GovernorAlpha::propose: proposer votes below proposal threshold");
         require(targets.length == values.length && targets.length == signatures.length && targets.length == calldatas.length, "GovernorAlpha::propose: proposal function information arity mismatch");
         require(targets.length != 0, "GovernorAlpha::propose: must provide actions");
         require(targets.length <= proposalMaxOperations(), "GovernorAlpha::propose: too many actions");
 
-        uint latestProposalId = latestProposalIds[msg.sender];
+        uint latestProposalId = latestProposalIds[msgSender];
         if (latestProposalId != 0) {
           ProposalState proposersLatestProposalState = state(latestProposalId);
           require(proposersLatestProposalState != ProposalState.Active, "GovernorAlpha::propose: one live proposal per proposer, found an already active proposal");
@@ -148,7 +151,7 @@ contract GovernorAlpha {
         proposalCount++;
         Proposal memory newProposal = Proposal({
             id: proposalCount,
-            proposer: msg.sender,
+            proposer: msgSender,
             eta: 0,
             targets: targets,
             values: values,
@@ -165,7 +168,7 @@ contract GovernorAlpha {
         proposals[newProposal.id] = newProposal;
         latestProposalIds[newProposal.proposer] = newProposal.id;
 
-        emit ProposalCreated(newProposal.id, msg.sender, targets, values, signatures, calldatas, startBlock, endBlock, description);
+        emit ProposalCreated(newProposal.id, msgSender, targets, values, signatures, calldatas, startBlock, endBlock, description);
         return newProposal.id;
     }
 
@@ -242,7 +245,7 @@ contract GovernorAlpha {
     }
 
     function castVote(uint proposalId, bool support) public {
-        return _castVote(msg.sender, proposalId, support);
+        return _castVote(_msgSender(), proposalId, support);
     }
 
     function castVoteBySig(uint proposalId, bool support, uint8 v, bytes32 r, bytes32 s) public {
