@@ -20,10 +20,13 @@ export async function governanceFixture(
   [wallet]: Wallet[],
   provider: providers.Web3Provider
 ): Promise<GovernanceFixture> {
+  // trusted forwarder address for GSN support. can be left address(0) to skip GSN support
+  const trustedForwarder = '0x0000000000000000000000000000000000000000'
+
   // deploy UNI, sending the total supply to the deployer
   const { timestamp: now } = await provider.getBlock('latest')
   const timelockAddress = Contract.getContractAddress({ from: wallet.address, nonce: 1 })
-  const uni = await deployContract(wallet, Uni, [wallet.address, timelockAddress, now + 60 * 60])
+  const uni = await deployContract(wallet, Uni, [wallet.address, timelockAddress, now + 60 * 60, trustedForwarder])
 
   // deploy timelock, controlled by what will be the governor
   const governorAlphaAddress = Contract.getContractAddress({ from: wallet.address, nonce: 2 })
@@ -31,7 +34,7 @@ export async function governanceFixture(
   expect(timelock.address).to.be.eq(timelockAddress)
 
   // deploy governorAlpha
-  const governorAlpha = await deployContract(wallet, GovernorAlpha, [timelock.address, uni.address])
+  const governorAlpha = await deployContract(wallet, GovernorAlpha, [timelock.address, uni.address, trustedForwarder])
   expect(governorAlpha.address).to.be.eq(governorAlphaAddress)
 
   return { uni, timelock, governorAlpha }
