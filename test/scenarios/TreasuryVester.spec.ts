@@ -33,12 +33,15 @@ describe('scenario:TreasuryVester', () => {
   let vestingBegin: number
   let vestingCliff: number
   let vestingEnd: number
+  let canVote: boolean
   beforeEach('deploy treasury vesting contract', async () => {
     const { timestamp: now } = await provider.getBlock('latest')
     vestingAmount = expandTo18Decimals(100)
     vestingBegin = now + 60
     vestingCliff = vestingBegin + 60
     vestingEnd = vestingBegin + 60 * 60 * 24 * 365
+    canVote = false
+
     treasuryVester = await deployContract(wallet, TreasuryVester, [
       uni.address,
       timelock.address,
@@ -46,6 +49,7 @@ describe('scenario:TreasuryVester', () => {
       vestingBegin,
       vestingCliff,
       vestingEnd,
+      canVote,
     ])
 
     // fund the treasury
@@ -56,6 +60,51 @@ describe('scenario:TreasuryVester', () => {
     await expect(treasuryVester.setRecipient(wallet.address)).to.be.revertedWith(
       'TreasuryVester::setRecipient: unauthorized'
     )
+  })
+
+  it('delegate:fail~unauthorized', async () => {
+    const treasuryVester1 = treasuryVester.connect(provider.getSigner(1))
+    await expect(treasuryVester1.delegate(wallet.address)).to.be.revertedWith('TreasuryVester::delegate: unauthorized')
+  })
+
+  it('delegate:fail~not allowed', async () => {
+    // deploy vesting treasury with EOA recipient
+    const treasuryVester = await deployContract(wallet, TreasuryVester, [
+      uni.address,
+      wallet.address,
+      vestingAmount,
+      vestingBegin,
+      vestingCliff,
+      vestingEnd,
+      canVote,
+    ])
+    await expect(treasuryVester.delegate(wallet.address)).to.be.revertedWith(
+      'TreasuryVester::delegate: not allowed to vote'
+    )
+  })
+
+  it('delegate', async () => {
+    // deploy vesting treasury with EOA recipient and permission to vote
+    const canVoteNow = true
+    const treasuryVester = await deployContract(wallet, TreasuryVester, [
+      uni.address,
+      wallet.address,
+      vestingAmount,
+      vestingBegin,
+      vestingCliff,
+      vestingEnd,
+      canVoteNow,
+    ])
+    // fund the treasury
+    await uni.transfer(treasuryVester.address, vestingAmount)
+
+    const currentVotesBefore = await uni.getCurrentVotes(wallet.address)
+    expect(currentVotesBefore).to.be.eq(0)
+
+    await treasuryVester.delegate(wallet.address)
+
+    const currentVotesAfter = await uni.getCurrentVotes(wallet.address)
+    expect(currentVotesAfter).to.be.eq(vestingAmount)
   })
 
   it('claim:fail', async () => {

@@ -15,13 +15,16 @@ contract TreasuryVester {
 
     uint public lastUpdate;
 
+    bool public canVote;
+
     constructor(
         address uni_,
         address recipient_,
         uint vestingAmount_,
         uint vestingBegin_,
         uint vestingCliff_,
-        uint vestingEnd_
+        uint vestingEnd_,
+        bool canVote_
     ) public {
         require(vestingBegin_ >= block.timestamp, 'TreasuryVester::constructor: vesting begin too early');
         require(vestingCliff_ >= vestingBegin_, 'TreasuryVester::constructor: cliff is too early');
@@ -36,6 +39,13 @@ contract TreasuryVester {
         vestingEnd = vestingEnd_;
 
         lastUpdate = vestingBegin;
+        canVote = canVote_;
+    }
+
+    function delegate(address delegatee) public {
+        require(msg.sender == recipient, 'TreasuryVester::delegate: unauthorized');
+        require(canVote, 'TreasuryVester::delegate: not allowed to vote');
+        IUni(uni).delegate(delegatee);
     }
 
     function setRecipient(address recipient_) public {
@@ -59,4 +69,5 @@ contract TreasuryVester {
 interface IUni {
     function balanceOf(address account) external view returns (uint);
     function transfer(address dst, uint rawAmount) external returns (bool);
+    function delegate(address delegatee) external;
 }
