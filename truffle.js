@@ -13,6 +13,8 @@ module.exports = {
   },
   networks: {
     development: {
+      // we run Ganache with chainID 1 to test the react app; no need for a dry run
+      skipDryRun: true,
       provider: undefined,
       verbose: process.env.VERBOSE,
       host: '127.0.0.1',
