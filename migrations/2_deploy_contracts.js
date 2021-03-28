@@ -1,7 +1,7 @@
 const ethereumjsUtil = require('ethereumjs-util')
 const assert = require('assert')
 
-const Uni = artifacts.require('Uni')
+const Uni = artifacts.require('GSNToken')
 const Timelock = artifacts.require('Timelock')
 const Multicall = artifacts.require('Multicall')
 const GovernorAlpha = artifacts.require('GovernorAlpha')

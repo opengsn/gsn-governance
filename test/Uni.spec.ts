@@ -6,7 +6,7 @@ import { ecsign } from 'ethereumjs-util'
 import { governanceFixture } from './fixtures'
 import { expandTo18Decimals, mineBlock } from './utils'
 
-import Uni from '../build/Uni.json'
+import Uni from '../build/GSNToken.json'
 
 chai.use(solidity)
 
@@ -35,14 +35,15 @@ describe('Uni', () => {
   let uni: Contract
   beforeEach(async () => {
     const fixture = await loadFixture(governanceFixture)
-    uni = fixture.uni
+    uni = fixture.gsnToken
   })
 
   it('permit', async () => {
+    const chainId = 1
     const domainSeparator = utils.keccak256(
       utils.defaultAbiCoder.encode(
         ['bytes32', 'bytes32', 'uint256', 'address'],
-        [DOMAIN_TYPEHASH, utils.keccak256(utils.toUtf8Bytes('Uniswap')), 1, uni.address]
+        [DOMAIN_TYPEHASH, utils.keccak256(utils.toUtf8Bytes('GSN Token')), chainId, uni.address]
       )
     )
 
@@ -104,13 +105,13 @@ describe('Uni', () => {
     const uni = await deployContract(wallet, Uni, [wallet.address, wallet.address, now + 60 * 60, trustedForwarder])
     const supply = await uni.totalSupply()
 
-    await expect(uni.mint(wallet.address, 1)).to.be.revertedWith('Uni::mint: minting not allowed yet')
+    await expect(uni.mint(wallet.address, 1)).to.be.revertedWith('Gsn::mint: minting not allowed yet')
 
     let timestamp = await uni.mintingAllowedAfter()
     await mineBlock(provider, timestamp.toString())
 
-    await expect(uni.connect(other1).mint(other1.address, 1)).to.be.revertedWith('Uni::mint: only the minter can mint')
-    await expect(uni.mint('0x0000000000000000000000000000000000000000', 1)).to.be.revertedWith('Uni::mint: cannot transfer to the zero address')
+    await expect(uni.connect(other1).mint(other1.address, 1)).to.be.revertedWith('Gsm::mint: only the minter can mint')
+    await expect(uni.mint('0x0000000000000000000000000000000000000000', 1)).to.be.revertedWith('Gsn::mint: cannot transfer to the zero address')
 
     // can mint up to 2%
     const mintCap = BigNumber.from(await uni.mintCap())
@@ -121,6 +122,6 @@ describe('Uni', () => {
     timestamp = await uni.mintingAllowedAfter()
     await mineBlock(provider, timestamp.toString())
     // cannot mint 2.01%
-    await expect(uni.mint(wallet.address, supply.mul(mintCap.add(1)))).to.be.revertedWith('Uni::mint: exceeded mint cap')
+    await expect(uni.mint(wallet.address, supply.mul(mintCap.add(1)))).to.be.revertedWith('Gsn::mint: exceeded mint cap')
   })
 })

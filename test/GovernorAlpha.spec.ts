@@ -23,7 +23,7 @@ describe('GovernorAlpha', () => {
   let governorAlpha: Contract
   beforeEach(async () => {
     const fixture = await loadFixture(governanceFixture)
-    uni = fixture.uni
+    uni = fixture.gsnToken
     timelock = fixture.timelock
     governorAlpha = fixture.governorAlpha
   })
@@ -48,7 +48,7 @@ describe('GovernorAlpha', () => {
     expect(votingPeriod).to.be.eq(40320)
     const timelockAddress = await governorAlpha.timelock()
     expect(timelockAddress).to.be.eq(timelock.address)
-    const uniFromGovernor = await governorAlpha.uni()
+    const uniFromGovernor = await governorAlpha.gsnToken()
     expect(uniFromGovernor).to.be.eq(uni.address)
   })
 })

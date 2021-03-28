@@ -24,7 +24,7 @@ describe('scenario:TreasuryVester', () => {
   let timelock: Contract
   beforeEach(async () => {
     const fixture = await loadFixture(governanceFixture)
-    uni = fixture.uni
+    uni = fixture.gsnToken
     timelock = fixture.timelock
   })
 
