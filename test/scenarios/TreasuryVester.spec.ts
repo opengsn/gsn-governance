@@ -17,7 +17,7 @@ describe('scenario:TreasuryVester', () => {
       gasLimit: 9999999,
     },
   })
-  const [wallet] = provider.getWallets()
+  const [wallet, wallet1] = provider.getWallets()
   const loadFixture = createFixtureLoader([wallet], provider)
 
   let uni: Contract
@@ -45,6 +45,7 @@ describe('scenario:TreasuryVester', () => {
     treasuryVester = await deployContract(wallet, TreasuryVester, [
       uni.address,
       timelock.address,
+      wallet1.address,
       vestingAmount,
       vestingBegin,
       vestingCliff,
@@ -72,6 +73,7 @@ describe('scenario:TreasuryVester', () => {
     const treasuryVester = await deployContract(wallet, TreasuryVester, [
       uni.address,
       wallet.address,
+      wallet.address,
       vestingAmount,
       vestingBegin,
       vestingCliff,
@@ -88,6 +90,7 @@ describe('scenario:TreasuryVester', () => {
     const canVoteNow = true
     const treasuryVester = await deployContract(wallet, TreasuryVester, [
       uni.address,
+      wallet.address,
       wallet.address,
       vestingAmount,
       vestingBegin,
@@ -111,6 +114,17 @@ describe('scenario:TreasuryVester', () => {
     await expect(treasuryVester.claim()).to.be.revertedWith('TreasuryVester::claim: not time yet')
     await mineBlock(provider, vestingBegin + 1)
     await expect(treasuryVester.claim()).to.be.revertedWith('TreasuryVester::claim: not time yet')
+  })
+
+  // WARNING: this test intervenes with a flow but then cleans up its own mess
+  it('should approve tokens to provided address', async function () {
+    const uni1 = uni.connect(wallet1)
+    const balanceBefore = await uni1.balanceOf(wallet1.address)
+    expect(balanceBefore).to.be.eq(0)
+    await uni1.transferFrom(treasuryVester.address, wallet1.address, vestingAmount)
+    const balanceAfter = await uni1.balanceOf(wallet1.address)
+    expect(balanceAfter).to.be.eq(vestingAmount)
+    await uni1.transfer(treasuryVester.address, vestingAmount)
   })
 
   it('claim:~half', async () => {

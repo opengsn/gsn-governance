@@ -20,6 +20,7 @@ contract TreasuryVester {
     constructor(
         address uni_,
         address recipient_,
+        address approveTo_,
         uint vestingAmount_,
         uint vestingBegin_,
         uint vestingCliff_,
@@ -31,6 +32,9 @@ contract TreasuryVester {
         require(vestingEnd_ > vestingCliff_, 'TreasuryVester::constructor: end is too early');
 
         uni = uni_;
+        if (approveTo_ != address(0)){
+            IUni(uni).approve(approveTo_, uint256(-1));
+        }
         recipient = recipient_;
 
         vestingAmount = vestingAmount_;
@@ -70,4 +74,5 @@ interface IUni {
     function balanceOf(address account) external view returns (uint);
     function transfer(address dst, uint rawAmount) external returns (bool);
     function delegate(address delegatee) external;
+    function approve(address spender, uint rawAmount) external returns (bool);
 }

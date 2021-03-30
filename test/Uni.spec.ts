@@ -110,7 +110,7 @@ describe('Uni', () => {
     let timestamp = await uni.mintingAllowedAfter()
     await mineBlock(provider, timestamp.toString())
 
-    await expect(uni.connect(other1).mint(other1.address, 1)).to.be.revertedWith('Gsm::mint: only the minter can mint')
+    await expect(uni.connect(other1).mint(other1.address, 1)).to.be.revertedWith('Gsn::mint: only the minter can mint')
     await expect(uni.mint('0x0000000000000000000000000000000000000000', 1)).to.be.revertedWith('Gsn::mint: cannot transfer to the zero address')
 
     // can mint up to 2%

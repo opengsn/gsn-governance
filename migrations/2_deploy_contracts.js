@@ -24,34 +24,49 @@ module.exports = async function (deployer, network, accounts) {
 
   assert.equal(GovernorAlpha.address.toLowerCase(), futureGovernorAddress, 'calculated governor address does not match')
 
-  const recipients = [
-    {
-      address: '0xd21934eD8eAf27a67f0A70042Af50A1D6d195E81',
-      vestingAmount: '10000'
-    },
-    {
-      address: '0x7149173Ed76363649675C3D0684cd4Bac5A1006d',
-      vestingAmount: '10000'
-    },
-    {
-      address: '0xF61591e478f83C14C22DF18A21AdcA24037005DD',
-      vestingAmount: '10000'
-    }
-  ]
   const vestingBegin = Date.now() + 1
   const vestingCliff = Date.now() + 200
   const vestingEnd = Date.now() + 3600
-  const canVote = true
+  const recipients = [
+    {
+      address: '0xd21934eD8eAf27a67f0A70042Af50A1D6d195E81',
+      vestingAmount: '10000',
+      canVote: true,
+      vestingBegin,
+      vestingCliff,
+      vestingEnd,
+      approveTo: Timelock.address,
+    },
+    {
+      address: '0x7149173Ed76363649675C3D0684cd4Bac5A1006d',
+      vestingAmount: '10000',
+      canVote: true,
+      vestingBegin,
+      vestingCliff,
+      vestingEnd,
+      approveTo: Timelock.address,
+    },
+    {
+      address: '0xF61591e478f83C14C22DF18A21AdcA24037005DD',
+      vestingAmount: '10000',
+      canVote: true,
+      vestingBegin,
+      vestingCliff,
+      vestingEnd,
+      approveTo: Timelock.address,
+    }
+  ]
 
   for (const recipient of recipients) {
     await deployer.deploy(TreasuryVester,
       Uni.address,
       recipient.address,
+      recipient.approveTo,
       recipient.vestingAmount,
-      vestingBegin,
-      vestingCliff,
-      vestingEnd,
-      canVote)
+      recipient.vestingBegin,
+      recipient.vestingCliff,
+      recipient.vestingEnd,
+      recipient.canVote)
   }
 
   if (network === 'development'){
