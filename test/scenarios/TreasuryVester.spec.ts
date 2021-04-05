@@ -33,14 +33,14 @@ describe('scenario:TreasuryVester', () => {
   let vestingBegin: number
   let vestingCliff: number
   let vestingEnd: number
-  let canVote: boolean
+  let canDelegate: boolean
   beforeEach('deploy treasury vesting contract', async () => {
     const { timestamp: now } = await provider.getBlock('latest')
     vestingAmount = expandTo18Decimals(100)
     vestingBegin = now + 60
     vestingCliff = vestingBegin + 60
     vestingEnd = vestingBegin + 60 * 60 * 24 * 365
-    canVote = false
+    canDelegate = false
 
     treasuryVester = await deployContract(wallet, TreasuryVester, [
       uni.address,
@@ -50,7 +50,7 @@ describe('scenario:TreasuryVester', () => {
       vestingBegin,
       vestingCliff,
       vestingEnd,
-      canVote,
+      canDelegate,
     ])
 
     // fund the treasury
@@ -78,16 +78,16 @@ describe('scenario:TreasuryVester', () => {
       vestingBegin,
       vestingCliff,
       vestingEnd,
-      canVote,
+      canDelegate,
     ])
     await expect(treasuryVester.delegate(wallet.address)).to.be.revertedWith(
-      'TreasuryVester::delegate: not allowed to vote'
+      'TreasuryVester::delegate: delegate not allowed'
     )
   })
 
   it('delegate', async () => {
-    // deploy vesting treasury with EOA recipient and permission to vote
-    const canVoteNow = true
+    // deploy vesting treasury with EOA recipient and permission to delegate
+    const canDelegateNow = true
     const treasuryVester = await deployContract(wallet, TreasuryVester, [
       uni.address,
       wallet.address,
@@ -96,7 +96,7 @@ describe('scenario:TreasuryVester', () => {
       vestingBegin,
       vestingCliff,
       vestingEnd,
-      canVoteNow,
+      canDelegateNow,
     ])
     // fund the treasury
     await uni.transfer(treasuryVester.address, vestingAmount)

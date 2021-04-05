@@ -15,7 +15,7 @@ contract TreasuryVester {
 
     uint public lastUpdate;
 
-    bool public canVote;
+    bool public canDelegate;
 
     constructor(
         address uni_,
@@ -25,7 +25,7 @@ contract TreasuryVester {
         uint vestingBegin_,
         uint vestingCliff_,
         uint vestingEnd_,
-        bool canVote_
+        bool canDelegate_
     ) public {
         require(vestingBegin_ >= block.timestamp, 'TreasuryVester::constructor: vesting begin too early');
         require(vestingCliff_ >= vestingBegin_, 'TreasuryVester::constructor: cliff is too early');
@@ -43,12 +43,12 @@ contract TreasuryVester {
         vestingEnd = vestingEnd_;
 
         lastUpdate = vestingBegin;
-        canVote = canVote_;
+        canDelegate = canDelegate_;
     }
 
     function delegate(address delegatee) public {
         require(msg.sender == recipient, 'TreasuryVester::delegate: unauthorized');
-        require(canVote, 'TreasuryVester::delegate: not allowed to vote');
+        require(canDelegate, 'TreasuryVester::delegate: delegate not allowed');
         IUni(uni).delegate(delegatee);
     }
 
