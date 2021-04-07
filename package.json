@@ -10,7 +10,7 @@
   "scripts": {
     "precompile": "rimraf ./build/",
     "compile": "waffle",
-    "migrate": "truffle migrate --reset --compile-all",
+    "deploy": "rm -rf build/contracts && truffle migrate --reset --compile-all --network $NETWORK",
     "pretest": "yarn compile",
     "test": "mocha",
     "lint": "prettier ./test/**/*.ts --check",
@@ -21,6 +21,7 @@
     "@types/chai": "^4.2.12",
     "@types/mocha": "^8.0.3",
     "@uniswap/v2-core": "^1.0.1",
+    "bn.js": "^5.2.0",
     "chai": "^4.2.0",
     "ethereum-waffle": "^3.1.0",
     "ethereumjs-util": "^7.0.4",
