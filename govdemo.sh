@@ -3,8 +3,8 @@
 
 # deploy team multisig contract (Gnosis Safe proxy can be created in GUI first)
 # cd safe-contracts
-NETWORK='development'
-GSNNETWORK='local'
+NETWORK='rinkeby'
+GSNNETWORK='rinkeby'
 
 export INFURA_ID='f40be2b1a3914db682491dc62a19ad43'
 # vesting is applied to 90% of allocated tokens, and 10% of tokens are released instantly
@@ -76,21 +76,7 @@ cd -
 ## transfer tokens to their destinations
 truffle exec --network $NETWORK ./distribute.js
 
-truffle exec --network $NETWORK ./fixinterface.js
-
 # set GSN owner to timelock
 truffle exec --network $NETWORK ./gsn-setowner.js
 
-# create airdrop frontend
-cd ../gsn-airdrop
-yarn run build
-echo === airdrop UI in `pwd`/packages/react-app/build
-surge packages/react-app/build/ gsn-airdrop.surge.sh
-cd -
-
-# create voting frontend
-cd ../gsn-governance-interface/
-yarn run build
-echo === voting frontend in `pwd`/build
-surge build/ gsn-voting.surge.sh
-cd -
+./govinterface.sh
