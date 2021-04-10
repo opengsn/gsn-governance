@@ -19,15 +19,16 @@ module.exports = async function (callback) {
     }
 
     const deployerBalance1 = await gsnToken.balanceOf(accounts[0])
-    console.log('deployerBalance', deployerBalance1.toString())
-    console.log('totalSupply', totalSupply.toString())
+    console.log('=== deployerBalance', deployerBalance1.toString()/1e18)
+    console.log('=== totalSupply', totalSupply.toString()/1e18)
 
+    let distributedPercent = 0
     async function transfer (amount, destination, name) {
-      console.log('=== will distribute to', name, destination, amount)
+      distributedPercent += parseFloat(amount)
       const amountBN = percentToWei(amount)
       await gsnToken.transfer(destination, amountBN)
       const balance = await gsnToken.balanceOf(destination)
-      console.log('=== distributed to', name, destination, balance.toString()/1e18)
+      console.log(`=== distributed ${amount}% of total supply to ${name}:\n    current balance is ${balance.toString()/1e18} for address ${destination}`)
     }
 
     // non-vested funds
@@ -42,7 +43,8 @@ module.exports = async function (callback) {
     await transfer(process.env.ECOSYSTEM_AMOUNT_NO_VEST, process.env.ECOSYSTEM_MULTISIG, 'ecosystem')
 
     const deployerBalance2 = await gsnToken.balanceOf(accounts[0])
-    console.log('deployerBalance', deployerBalance2.toString()/1e18)
+    console.log(`=== distributed ${distributedPercent}% of total supply without vesting`)
+    console.log('=== deployerBalance', deployerBalance2.toString()/1e18)
     assert.equal(deployerBalance2, 0, 'some tokens left to deployer')
   } catch (e) {
     console.log('ex=', e)

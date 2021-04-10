@@ -3,7 +3,7 @@
 
 # deploy team multisig contract (Gnosis Safe proxy can be created in GUI first)
 # cd safe-contracts
-NETWORK='rinkeby'
+export NETWORK='rinkeby'
 GSNNETWORK='rinkeby'
 
 export INFURA_ID='f40be2b1a3914db682491dc62a19ad43'
@@ -47,8 +47,9 @@ export COMMUNITY_YEAR_4_AMOUNT='5.4'
 export AIRDROP_AMOUNT='6'
 
 # GSN with new
-cd ../gsn-private
-node dist/src/cli/commands/gsn.js deploy --yes --network $GSNNETWORK --mnemonic secretMnemonic.txt
+cd ../gsn
+
+node packages/cli/dist/commands/gsn.js deploy --yes --network $GSNNETWORK #--mnemonic secretMnemonic.txt
 export FORWARDER=`jq < ./build/gsn/Forwarder.json -r  .address`
 export RELAYHUB=`jq < ./build/gsn/RelayHub.json -r  .address`
 
@@ -79,4 +80,4 @@ truffle exec --network $NETWORK ./distribute.js
 # set GSN owner to timelock
 truffle exec --network $NETWORK ./gsn-setowner.js
 
-./govinterface.sh
+./govinterfaces.sh

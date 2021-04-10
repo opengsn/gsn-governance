@@ -1,7 +1,5 @@
 #!/bin/bash -xe
 
-NETWORK='rinkeby'
-
 truffle exec --network $NETWORK ./fixinterface.js
 
 # create airdrop frontend

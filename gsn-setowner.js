@@ -1,7 +1,7 @@
 const fs = require('fs')
 //this script should run in "gsn" folder..
 const Timelock = artifacts.require('Timelock')
-require( '../gsn-private/build/contracts/RelayHub.json')
+
 // Transfer non-vested tokens
 module.exports = async function (callback) {
   const hub = new web3.eth.Contract([

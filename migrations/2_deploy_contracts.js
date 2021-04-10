@@ -37,7 +37,9 @@ module.exports = async function (deployer, network, accounts) {
     return totalSupply.muln(Math.round(parseFloat(pct) * 1000)).divn(100000)
   }
 
+  let distributedPercent = 0
   for (const recipient of recipients) {
+    distributedPercent += recipient.vestingAmount
     const vestingAmountBN = percentToWei(recipient.vestingAmount)
     const approveTo = recipient.canBeCancelled ? Timelock.address : '0x0000000000000000000000000000000000000000'
     const recipientAddress = recipient.recipient === 'timelock' ? Timelock.address : recipient.recipient
@@ -56,6 +58,7 @@ module.exports = async function (deployer, network, accounts) {
     console.log('Deployed TreasuryVester for ', recipient.name, ':', contract.address)
   }
 
+  console.log(`=== distributed ${distributedPercent}% of total supply to vesting contracts`)
   if (network === 'development') {
     await deployer.deploy(Multicall)
   }
