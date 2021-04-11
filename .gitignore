@@ -4,3 +4,4 @@ build/
 /.idea/uniswap-governance.iml
 /.idea/vcs.xml
 /.idea/jsLibraryMappings.xml
+/deploy-scripts/secretMnemonic.txt

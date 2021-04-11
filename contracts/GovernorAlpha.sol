@@ -8,7 +8,7 @@ contract GovernorAlpha is BaseRelayRecipient {
     string public constant name = "GSN Governor Alpha";
 
     /// @notice The number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed
-    function quorumVotes() public pure returns (uint) { return 20_000_000e18; } // 4% of GSNToken
+    function quorumVotes() public pure returns (uint) { return 20_000_000e18; } // 2% of GSNToken
 
     /// @notice The number of votes required in order for a voter to become a proposer
     function proposalThreshold() public pure returns (uint) { return 5_000_000e18; } // 0.5% of GSNToken

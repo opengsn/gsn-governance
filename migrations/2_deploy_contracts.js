@@ -4,9 +4,9 @@ const assert = require('assert')
 const recipients = require('../recipients')
 
 const GSNToken = artifacts.require('GSNToken')
-const Timelock = artifacts.require('Timelock')
+let Timelock = artifacts.require('Timelock')
 const Multicall = artifacts.require('Multicall')
-const GovernorAlpha = artifacts.require('GovernorAlpha')
+let GovernorAlpha = artifacts.require('GovernorAlpha')
 const TreasuryVester = artifacts.require('TreasuryVester')
 
 module.exports = async function (deployer, network, accounts) {
@@ -14,7 +14,7 @@ module.exports = async function (deployer, network, accounts) {
   const account = accounts[0]
   const minter = accounts[0]
 
-  const trustedForwarder = process.env.FORWARDER
+  const trustedForwarder = process.env.ForwarderAddress
 
   const mintingAllowedAfter = Date.now() + 1
   await deployer.deploy(GSNToken, account, minter, mintingAllowedAfter, trustedForwarder)
@@ -22,7 +22,13 @@ module.exports = async function (deployer, network, accounts) {
   const futureGovernorAddress = ethereumjsUtil.bufferToHex(ethereumjsUtil.generateAddress(
     ethereumjsUtil.toBuffer(account),
     ethereumjsUtil.toBuffer(transactionCount + 1)))
-  const delay = process.env.NETWORK === 'development' ? 60 : 172800
+
+  let delay = 172800
+  if ( process.env.NETWORK !== 'mainnet' ) {
+
+    console.log('== test network: use GovernorAlphaDebug/TimelockDebug, with short delays (minutes, instead of weeks)')
+    delay = 60
+  }
   await deployer.deploy(Timelock, futureGovernorAddress, delay)
   await deployer.deploy(GovernorAlpha, Timelock.address, GSNToken.address, trustedForwarder)
 

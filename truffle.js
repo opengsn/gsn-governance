@@ -1,6 +1,11 @@
 var HDWalletProvider = require('truffle-hdwallet-provider')
 var mnemonic = 'digital unknown jealous mother legal hedgehog save glory december universe spread figure custom found six'
 
+if ( process.env.MNEMONIC_FILE ) {
+  console.log( `== reading mnemonic file: ${process.env.MNEMONIC_FILE}`)
+  mnemonic = require('fs').readFileSync(process.env.MNEMONIC_FILE, 'utf-8')
+}
+
 module.exports = {
   compilers: {
     solc: {

@@ -26,6 +26,10 @@ module.exports = async function (callback) {
     async function transfer (amount, destination, name) {
       distributedPercent += parseFloat(amount)
       const amountBN = percentToWei(amount)
+      const balanceBefore = await gsnToken.balanceOf(destination)
+      if (!balanceBefore.eqn(0)) {
+        console.log(`FATAL: address ${destination} already have balance: ${balanceBefore.toString()}`)
+      }
       await gsnToken.transfer(destination, amountBN)
       const balance = await gsnToken.balanceOf(destination)
       console.log(`=== distributed ${amount}% of total supply to ${name}:\n    current balance is ${balance.toString()/1e18} for address ${destination}`)
