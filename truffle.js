@@ -27,6 +27,13 @@ module.exports = {
       skipDryRun: true,
       network_id: 4
     },
+    mainnet: {
+      provider: function () {
+        return new HDWalletProvider(mnemonic, 'https://mainnet.infura.io/v3/f40be2b1a3914db682491dc62a19ad43')
+      },
+      skipDryRun: true,
+      network_id: 42
+    },
     development: {
       // we run Ganache with chainID 1 to test the react app; no need for a dry run
       skipDryRun: true,

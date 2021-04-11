@@ -54,13 +54,13 @@ else
 
   (cd tmp/relay; scp -r .env config $RELAY_HOST: )
 
-  ../../gsn/dockers/relaydc/rdc $RELAY_HOST up -d
+RELAYDC_TAG=:2.2.0  ../../gsn/dockers/relaydc/rdc $RELAY_HOST up -d
 
   echo "To see the relay logs, run:"
   echo "   ../../gsn/dockers/relaydc/rdc $RELAY_HOST logs -t"
 
   echo "waiting for http service to start"
-  while ! ../../gsn/dockers/relaydc/rdc grink22 logs|grep "$RELAY_HOST verified"; do sleep 5; done
+  while ! ../../gsn/dockers/relaydc/rdc $RELAY_HOST logs|grep "$RELAY_HOST verified"; do sleep 5; done
   sleep 5
 
 fi
