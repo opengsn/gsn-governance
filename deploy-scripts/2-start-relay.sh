@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 cd `dirname $0`
 
 source gov-conf.sh
@@ -7,7 +7,7 @@ source $GSN_OUT
 if [ $NETWORK == "development" ]; then
   NODEURL="http://$RELAY_HOST:8545"
 else
-  NODEURL="https://$NETWORK.infura.io/v3/INFURA_ID"
+  NODEURL="https://$NETWORK.infura.io/v3/$INFURA_ID"
 fi
 
 mkdir -p tmp/relay/config
@@ -16,13 +16,17 @@ cat <<EOF > tmp/relay/config/gsn-relay-config.json
 {
   "baseRelayFee": 0,
   "pctRelayFee": 70,
-  "relayHubAddress": "$RelayHubAddress",
-  "stakeManagerAddress": "$StakeManagerAddress",
+  "versionRegistryAddress": "$VersionRegistryAddress",
   "ownerAddress": "$RELAY_OWNER",
   "gasPriceFactor": 1,
   "confirmationsNeeded": 1,
   "ethereumNodeUrl": "$NODEURL"
 }
+EOF
+
+cat <<EOF > tmp/relay/.env
+HOST=$RELAY_HOST
+HTTPS_STAGE=production
 EOF
 
 
@@ -48,9 +52,18 @@ if [ $NETWORK == "development" ]; then
 
 else
 
-  $SSH xxxx
+  (cd tmp/relay; scp -r .env config $RELAY_HOST: )
+
+  ../../gsn/dockers/relaydc/rdc $RELAY_HOST up -d
+
+  echo "To see the relay logs, run:"
+  echo "   ../../gsn/dockers/relaydc/rdc $RELAY_HOST logs -t"
+
+  echo "waiting for http service to start"
+  while ! ../../gsn/dockers/relaydc/rdc grink22 logs|grep "$RELAY_HOST verified"; do sleep 5; done
+  sleep 5
 
 fi
 
-node ../../gsn/packages/cli/dist/commands/gsn.js relayer-register $GSNNETWORK --relayUrl $RELAY_URL
+node ../../gsn/packages/cli/dist/commands/gsn.js relayer-register $GSNNETWORK --gasPrice $GASPRICE_GWEI --relayUrl $RELAY_URL
 

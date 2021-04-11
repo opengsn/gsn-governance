@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -xe
 
 cd `dirname $0`
 source gov-conf.sh
@@ -11,10 +11,14 @@ else
     GSNNETWORK="--network $NETWORK --mnemonic $MNEMONIC_FILE"
 fi
 
-node ./packages/cli/dist/commands/gsn.js deploy --yes --registryHubId hub $GSNNETWORK
+if [ $NETWORK != 'mainnet' ] ; then
+  YES=--yes
+fi
+
+node ./packages/cli/dist/commands/gsn.js deploy $YES --gasPrice $GASPRICE_GWEI --registryHubId hub $GSNNETWORK
 
 (
-echo export GSNNETWORK="$GSNNETWORK"
+echo "export GSNNETWORK=\"$GSNNETWORK\""
 for c in RelayHub Forwarder Paymaster StakeManager Penalizer VersionRegistry ; do
 echo export ${c}Address=`jq < build/gsn/$c.json .address` >> $GSN_OUT
 done

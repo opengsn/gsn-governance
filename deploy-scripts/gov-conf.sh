@@ -16,6 +16,8 @@ mkdir -p tmp
 export NETWORK='development'
 #export NETWORK='rinkeby'
 
+export GASPRICE_GWEI=10
+
 export GSN_OUT=`pwd`/tmp/gsn-out.sh
 export AIRDROP_OUT=`pwd`/tmp/airdrop-out.sh
 
@@ -25,12 +27,13 @@ if [ $NETWORK != 'development' ] ; then
   export MNEMONIC_FILE=`pwd`/secretMnemonic.txt
   test -r $MNEMONIC_FILE || fatal "no such file: MNEMONIC_FILE=$MNEMONIC_FILE"
 
+  #should match the mnemonic file
+  export RELAY_OWNER=xxxxx
+
   export INFURA_ID='f40be2b1a3914db682491dc62a19ad43'
 
   export RELAY_HOST="grink22.relays.opengsn.org"
   export RELAY_URL="https://$RELAY_HOST/gsn1"
-  #should match the mnemonic file
-  export RELAY_OWNER=xxx
 
 else
 
@@ -43,8 +46,8 @@ else
 fi
 
 # for testing, can set DNS names to any unique name under surge.sh
-AIRDROP_DNS=gsn-airdrop1.surge.sh
-VOTE_DNS=gsn-voting1.surge.sh
+AIRDROP_DNS=gsn-airdrop.surge.sh
+VOTE_DNS=gsn-voting.surge.sh
 
 # vesting is applied to 90% of allocated tokens, and 10% of tokens are released instantly
 
