@@ -1,5 +1,7 @@
 #!/bin/bash -e
 cd `dirname $0`
+echo ==== disabled, for now
+exit 1
 
 source gov-conf.sh
 source $GSN_OUT
@@ -65,5 +67,5 @@ RELAYDC_TAG=:2.2.0  ../../gsn/dockers/relaydc/rdc $RELAY_HOST up -d
 
 fi
 
-node ../../gsn/packages/cli/dist/commands/gsn.js relayer-register $GSNNETWORK --gasPrice $GASPRICE_GWEI --relayUrl $RELAY_URL
+node ../../gsn/packages/cli/dist/commands/gsn.js relayer-register $GSN_NETWORK --gasPrice $GAS_PRICE_GWEI --relayUrl $RELAY_URL
 

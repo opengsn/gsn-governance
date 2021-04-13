@@ -9,7 +9,8 @@ if (!process.env.NETWORK) {
 
 let fullCycle
 
-if (process.env.NETWORK === 'mainnet') {
+if (process.env.IS_MAINNET) {
+  console.warn('=== Using mainnet 4-years vesting period!')
   // on mainnet: 4 years with 2-month cliff
   fullCycle = {
     vestingBegin: Date.now() + 2 * month,
@@ -18,7 +19,7 @@ if (process.env.NETWORK === 'mainnet') {
   }
 } else {
   // TODO: non-mainnet use very short (30-min) cycles
-  console.warn('Using very short vesting period!')
+  console.warn('=== Using very short vesting period!')
   fullCycle = {
     vestingBegin: Date.now() + 5 * minute,
     vestingCliff: Date.now() + 10 * minute,
@@ -31,6 +32,7 @@ const year1 = {
   vestingCliff: Date.now(),
   vestingEnd: Date.now() + year
 }
+
 const year2 = {
   vestingBegin: Date.now() + year,
   vestingCliff: Date.now() + year,

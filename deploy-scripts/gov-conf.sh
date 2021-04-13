@@ -14,38 +14,45 @@ export DEPLOY_DIR=`pwd`/deploy
 mkdir -p $DEPLOY_DIR
 
 #development, rinkeby, mainnet
+# forked network is still 'development'
 export NETWORK='development'
 #export NETWORK='rinkeby'
 
-export GASPRICE_GWEI=10
+export GAS_PRICE_GWEI=10
+export GAS_LIMIT=5000000
+
+# configure mainnet settings (non-debug Timelock, Governor)
+export IS_MAINNET=1
+
+# force using mnemonic file
+export MNEMONIC_FILE=`pwd`/secretMnemonic.txt
+
+#test -r $MNEMONIC_FILE || fatal "no such file: MNEMONIC_FILE=$MNEMONIC_FILE"
 
 export GSN_OUT=$DEPLOY_DIR/gsn-out.sh
 export AIRDROP_OUT=$DEPLOY_DIR/airdrop-out.sh
 export GOV_OUT=$DEPLOY_DIR/gov-out.sh
 
-if [ $NETWORK != 'development' ] ; then
 
-  # only have mnemonic file in external networks
-  export MNEMONIC_FILE=`pwd`/secretMnemonic.txt
-  test -r $MNEMONIC_FILE || fatal "no such file: MNEMONIC_FILE=$MNEMONIC_FILE"
-
-  #should match the mnemonic file
-  export RELAY_OWNER=xxxxx
-
-  export INFURA_ID='f40be2b1a3914db682491dc62a19ad43'
-
-  export RELAY_HOST="grink22.relays.opengsn.org"
-  export RELAY_URL="https://$RELAY_HOST/gsn1"
-
-else
-
-  #on development, need to be host ip. this works on mac..
-  export RELAY_HOST=`ifconfig|grep -v 127.0.0.1| awk '/inet / {print $2}'`
-  export RELAY_URL="http://$RELAY_HOST:8090"
-  #default to ganache address1
-  export RELAY_OWNER="0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1"
-
-fi
+#if [ $NETWORK != 'development' ] ; then
+#
+#  #should match the mnemonic file
+#  export RELAY_OWNER=xxxxx
+#
+#  export INFURA_ID='f40be2b1a3914db682491dc62a19ad43'
+#
+#  export RELAY_HOST="grink22.relays.opengsn.org"
+#  export RELAY_URL="https://$RELAY_HOST/gsn1"
+#
+#else
+#
+#  #on development, need to be host ip. this works on mac..
+#  export RELAY_HOST=`ifconfig|grep -v 127.0.0.1| awk '/inet / {print $2}'`
+#  export RELAY_URL="http://$RELAY_HOST:8090"
+#  #default to ganache address1
+#  export RELAY_OWNER="0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1"
+#
+#fi
 
 # for testing, can set DNS names to any unique name under surge.sh
 AIRDROP_DNS=gsn-airdrop.surge.sh

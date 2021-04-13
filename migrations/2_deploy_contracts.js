@@ -24,7 +24,7 @@ module.exports = async function (deployer, network, accounts) {
     ethereumjsUtil.toBuffer(transactionCount + 1)))
 
   let delay = 172800
-  if ( process.env.NETWORK !== 'mainnet' ) {
+  if ( !process.env.IS_MAINNET ) {
 
     console.log('== test network: use GovernorAlphaDebug/TimelockDebug, with short delays (minutes, instead of weeks)')
     delay = 60
@@ -74,7 +74,7 @@ module.exports = async function (deployer, network, accounts) {
   if (outfile) {
     console.log('== writing addresses to',outfile)
     fs.writeFileSync(outfile,
-        `# network ${process.env.NETWORK}\n` +
+        `# network ${process.env.NETWORK} mainnet=${process.env.IS_MAINNET}\n` +
         Object.entries(outputs).map(([k,v])=>`export ${k}="${v}"`).join('\n'))
   }
 

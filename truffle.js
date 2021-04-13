@@ -1,5 +1,5 @@
 var HDWalletProvider = require('truffle-hdwallet-provider')
-var mnemonic = 'digital unknown jealous mother legal hedgehog save glory december universe spread figure custom found six'
+let mnemonic
 
 if ( process.env.MNEMONIC_FILE ) {
   console.log( `== reading mnemonic file: ${process.env.MNEMONIC_FILE}`)
@@ -37,9 +37,12 @@ module.exports = {
     development: {
       // we run Ganache with chainID 1 to test the react app; no need for a dry run
       skipDryRun: true,
-      provider: undefined,
+      provider: mnemonic ? function () {
+        return new HDWalletProvider(mnemonic, 'http://localhost:8545')
+      } : null,
       verbose: process.env.VERBOSE,
-      gasPrice: (process.env.GASPRICE_GWEI*1e9).toString(),
+      gasPrice: (process.env.GAS_PRICE_GWEI*1e9).toString(),
+      gas: process.env.GAS_LIMIT ? parseInt(process.env.GAS_LIMIT) : null,
       host: '127.0.0.1',
       port: 8545,
       network_id: '*'
