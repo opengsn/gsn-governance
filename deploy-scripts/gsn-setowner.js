@@ -41,7 +41,7 @@ module.exports = async function (callback) {
       console.log('RelayHub: owner already set')
     } else
     if (currentOwner !== from) {
-      console.error(`FATAL: RealyHub: current owner is ${currentOwner}, but from is ${from}. Can't setOwner`)
+      console.error(`FATAL: RealyHub: current owner is ${currentOwner}, but from is ${from}.\n\tCan't setOwner to timelock ${Timelock.address}`)
       process.exit(1)
     } else {
       await hub.methods.transferOwnership(Timelock.address).send({from}).catch(e=>console.log(e))

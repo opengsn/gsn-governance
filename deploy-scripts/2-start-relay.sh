@@ -10,9 +10,9 @@ else
   NODEURL="https://$NETWORK.infura.io/v3/$INFURA_ID"
 fi
 
-mkdir -p tmp/relay/config
+mkdir -p $DEPLOY_DIR/relay/config
 
-cat <<EOF > tmp/relay/config/gsn-relay-config.json
+cat <<EOF > $DEPLOY_DIR/relay/config/gsn-relay-config.json
 {
   "baseRelayFee": 0,
   "pctRelayFee": 70,
@@ -24,7 +24,7 @@ cat <<EOF > tmp/relay/config/gsn-relay-config.json
 }
 EOF
 
-cat <<EOF > tmp/relay/.env
+cat <<EOF > $DEPLOY_DIR/relay/.env
 HOST=$RELAY_HOST
 HTTPS_STAGE=production
 EOF
@@ -37,7 +37,7 @@ if [ $NETWORK == "development" ]; then
   docker rm -f gsnrelay
   docker run -d \
     --name gsnrelay \
-    -v `pwd`:`pwd` -w `pwd`/tmp/relay \
+    -v `pwd`:`pwd` -w `pwd`/$DEPLOY_DIR/relay \
     -p 8090:8090 \
     -e port=8090 \
     -e relayHubId=hub \
@@ -52,7 +52,7 @@ if [ $NETWORK == "development" ]; then
 
 else
 
-  (cd tmp/relay; scp -r .env config $RELAY_HOST: )
+  (cd $DEPLOY_DIR/relay; scp -r .env config $RELAY_HOST: )
 
 RELAYDC_TAG=:2.2.0  ../../gsn/dockers/relaydc/rdc $RELAY_HOST up -d
 

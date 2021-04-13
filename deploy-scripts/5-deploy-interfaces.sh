@@ -11,12 +11,12 @@ truffle exec --network $NETWORK ./fixinterface.js
 cd ../../gsn-airdrop
 yarn run build
 echo === airdrop UI in `pwd`/packages/react-app/build
-surge packages/react-app/build/ $AIRDROP_DNS
+HOME=$DEPLOY_DIR surge packages/react-app/build/ $AIRDROP_DNS
 cd -
 
 # create voting frontend
 cd ../../gsn-governance-interface/
 yarn run build
 echo === voting frontend in `pwd`/build
-surge build/ $VOTE_DNS
+HOME=$DEPLOY_DIR surge build/ $VOTE_DNS
 cd -

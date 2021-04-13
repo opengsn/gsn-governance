@@ -1,6 +1,6 @@
 const ethereumjsUtil = require('ethereumjs-util')
 const assert = require('assert')
-
+const fs = require('fs')
 const recipients = require('../recipients')
 
 const GSNToken = artifacts.require('GSNToken')
@@ -32,6 +32,11 @@ module.exports = async function (deployer, network, accounts) {
   await deployer.deploy(Timelock, futureGovernorAddress, delay)
   await deployer.deploy(GovernorAlpha, Timelock.address, GSNToken.address, trustedForwarder)
 
+  outputs={
+    TIMELOCK: Timelock.address,
+    GOVERNOR: GovernorAlpha.address
+  }
+
   assert.equal(GovernorAlpha.address.toLowerCase(), futureGovernorAddress, 'calculated governor address does not match')
 
   const gsnToken = await GSNToken.deployed()
@@ -61,7 +66,16 @@ module.exports = async function (deployer, network, accounts) {
       recipient.canVote)
     await gsnToken.transfer(contract.address, vestingAmountBN)
 
+    outputs["VESTER_"+recipient.name.toUpperCase()] = contract.address
     console.log('Deployed TreasuryVester for ', recipient.name, ':', contract.address)
+  }
+
+  const outfile = process.env.GOV_OUT
+  if (outfile) {
+    console.log('== writing addresses to',outfile)
+    fs.writeFileSync(outfile,
+        `# network ${process.env.NETWORK}\n` +
+        Object.entries(outputs).map(([k,v])=>`export ${k}="${v}"`).join('\n'))
   }
 
   console.log(`=== distributed ${distributedPercent}% of total supply to vesting contracts`)

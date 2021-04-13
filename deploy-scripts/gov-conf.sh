@@ -10,7 +10,8 @@ function fatal {
 # deploy team multisig contract (Gnosis Safe proxy can be created in GUI first)
 # cd safe-contracts
 
-mkdir -p tmp
+export DEPLOY_DIR=`pwd`/deploy
+mkdir -p $DEPLOY_DIR
 
 #development, rinkeby, mainnet
 export NETWORK='development'
@@ -18,8 +19,9 @@ export NETWORK='development'
 
 export GASPRICE_GWEI=10
 
-export GSN_OUT=`pwd`/tmp/gsn-out.sh
-export AIRDROP_OUT=`pwd`/tmp/airdrop-out.sh
+export GSN_OUT=$DEPLOY_DIR/gsn-out.sh
+export AIRDROP_OUT=$DEPLOY_DIR/airdrop-out.sh
+export GOV_OUT=$DEPLOY_DIR/gov-out.sh
 
 if [ $NETWORK != 'development' ] ; then
 
