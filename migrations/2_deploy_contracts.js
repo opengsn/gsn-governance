@@ -1,7 +1,7 @@
 const ethereumjsUtil = require('ethereumjs-util')
 const assert = require('assert')
 const fs = require('fs')
-const recipients = require('../recipients')
+const recipients = require('../deploy-scripts/recipients')
 
 const GSNToken = artifacts.require('GSNToken')
 let Timelock = artifacts.require('Timelock')
@@ -50,7 +50,7 @@ module.exports = async function (deployer, network, accounts) {
 
   let distributedPercent = 0
   for (const recipient of recipients) {
-    distributedPercent += recipient.vestingAmount
+    distributedPercent += parseFloat(recipient.vestingAmount)
     const vestingAmountBN = percentToWei(recipient.vestingAmount)
     const approveTo = recipient.canBeCancelled ? Timelock.address : '0x0000000000000000000000000000000000000000'
     const recipientAddress = recipient.recipient === 'timelock' ? Timelock.address : recipient.recipient

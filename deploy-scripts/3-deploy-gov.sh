@@ -17,9 +17,9 @@ fi
 yarn --cwd .. deploy
 
 # write output to AIRDROP_OUT
-yarn --cwd ../../gsn-airdrop deploy
+#yarn --cwd ../../gsn-airdrop deploy
 
 # set GSN owner to timelock
-truffle exec --network $NETWORK ./gsn-setowner.js
+#truffle exec --network $NETWORK ./gsn-setowner.js
 
 cd -

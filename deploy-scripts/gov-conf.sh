@@ -61,14 +61,13 @@ export TEAM_AMOUNT_NO_VEST='1.95'
 
 # sponsors
 
-# TODO: these are ganache addresses 8 & 9 for now...
-export EF_MULTISIG='0xACa94ef8bD5ffEE41947b4585a84BdA5a3d3DA6E'
-export EF_AMOUNT='9'
-export EF_AMOUNT_NO_VEST='1'
+#export EF_MULTISIG='0xACa94ef8bD5ffEE41947b4585a84BdA5a3d3DA6E'
+#export EF_AMOUNT='9'
+#export EF_AMOUNT_NO_VEST='1'
 
-export ETC_MULTISIG='0x1dF62f291b2E969fB0849d99D9Ce41e2F137006e'
-export ETC_AMOUNT='4.05'
-export ETC_AMOUNT_NO_VEST='0.45'
+#export ETC_MULTISIG='0x1dF62f291b2E969fB0849d99D9Ce41e2F137006e'
+#export ETC_AMOUNT='4.05'
+#export ETC_AMOUNT_NO_VEST='0.45'
 
 # ecosystem and charity
 
@@ -88,4 +87,6 @@ export COMMUNITY_YEAR_2_AMOUNT='16.2'
 export COMMUNITY_YEAR_3_AMOUNT='10.8'
 export COMMUNITY_YEAR_4_AMOUNT='5.4'
 
-export AIRDROP_AMOUNT='6'
+#export AIRDROP_AMOUNT='6'
+
+export EXPECTED_EXCESS_TOKENS='20.5'

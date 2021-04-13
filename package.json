@@ -10,6 +10,7 @@
   "scripts": {
     "ganache": "ganache-cli --networkId 5 --chainId 5 --gasLimit 120000000 --deterministic",
     "precompile": "rimraf ./build/",
+    "patch": "patch-package",
     "compile": "waffle",
     "deploy": "rm -rf build/contracts && truffle migrate --reset --compile-all --network $NETWORK",
     "pretest": "yarn compile",
@@ -28,12 +29,14 @@
     "ethereumjs-util": "^7.0.4",
     "ganache-cli": "^6.12.2",
     "mocha": "^8.1.3",
+    "patch-package": "^6.4.7",
     "prettier": "^2.1.1",
     "rimraf": "^3.0.2",
     "solc": "0.5.16",
-    "truffle": "^5.2.4",
+    "truffle": "5.1.26",
     "truffle-hdwallet-provider": "^1.0.17",
     "ts-node": "^9.0.0",
-    "typescript": "^4.0.2"
+    "typescript": "^4.0.2",
+    "web3-utils": "^1.3.5"
   }
 }

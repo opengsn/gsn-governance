@@ -39,6 +39,7 @@ module.exports = {
       skipDryRun: true,
       provider: undefined,
       verbose: process.env.VERBOSE,
+      gasPrice: (process.env.GASPRICE_GWEI*1e9).toString(),
       host: '127.0.0.1',
       port: 8545,
       network_id: '*'
