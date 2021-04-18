@@ -3,16 +3,16 @@ cd `dirname $0`
 
 source gov-conf.sh
 source $GSN_OUT
-source $AIRDROP_OUT
+#source $AIRDROP_OUT
 
 truffle exec --network $NETWORK ./fixinterface.js
 
 # create airdrop frontend
-cd ../../gsn-airdrop
-yarn run build
-echo === airdrop UI in `pwd`/packages/react-app/build
-HOME=$DEPLOY_DIR surge packages/react-app/build/ $AIRDROP_DNS
-cd -
+#cd ../../gsn-airdrop
+#yarn run build
+#echo === airdrop UI in `pwd`/packages/react-app/build
+#HOME=$DEPLOY_DIR surge packages/react-app/build/ $AIRDROP_DNS
+#cd -
 
 # create voting frontend
 cd ../../gsn-governance-interface/
