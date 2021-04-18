@@ -32,14 +32,15 @@ module.exports = async function (deployer, network, accounts) {
   await deployer.deploy(Timelock, futureGovernorAddress, delay)
   await deployer.deploy(GovernorAlpha, Timelock.address, GSNToken.address, trustedForwarder)
 
-  outputs={
-    TIMELOCK: Timelock.address,
-    GOVERNOR: GovernorAlpha.address
-  }
-
   assert.equal(GovernorAlpha.address.toLowerCase(), futureGovernorAddress, 'calculated governor address does not match')
 
   const gsnToken = await GSNToken.deployed()
+
+  outputs={
+    TIMELOCK: Timelock.address,
+    GOVERNOR: GovernorAlpha.address,
+    GSNTOKEN: GSNToken.address
+  }
 
   // amounts are given in % of supply in "wei". there are 10 million base tokens (10^25 wei) in each %
   const totalSupply = await gsnToken.totalSupply()

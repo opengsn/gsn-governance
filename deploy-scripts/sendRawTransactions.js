@@ -163,6 +163,7 @@ options:
                 gasEstimation = await web3.eth.estimateGas(estimateData)
                 // .catch(e=>e.message)
                 console.log('after est:', printableTXData({
+                    nonce,
                     gasPrice: gasPrice.toString(),
                     gasLimit: gasLimit.toString(),
                     gasEst: gasEstimation,
