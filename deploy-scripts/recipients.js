@@ -9,44 +9,47 @@ if (!process.env.NETWORK) {
 
 let fullCycle
 
+// Vesting uses Unix time (seconds-based), not javascript-time (ms-based)
+let dateNow = Math.round(Date.now()/1000);
+
 if (process.env.IS_MAINNET) {
   console.warn('=== Using mainnet 4-years vesting period!')
   // on mainnet: 4 years with 2-month cliff
   fullCycle = {
-    vestingBegin: Date.now() + 2 * month,
-    vestingCliff: Date.now() + 2 * month,
-    vestingEnd: Date.now() + 4 * year
+    vestingBegin: dateNow + 2 * month,
+    vestingCliff: dateNow + 2 * month,
+    vestingEnd: dateNow + 4 * year
   }
 } else {
   // TODO: non-mainnet use very short (30-min) cycles
   console.warn('=== Using very short vesting period!')
   fullCycle = {
-    vestingBegin: Date.now() + 5 * minute,
-    vestingCliff: Date.now() + 10 * minute,
-    vestingEnd: Date.now() + 30 * minute
+    vestingBegin: dateNow + 2 * minute,
+    vestingCliff: dateNow + 2 * minute,
+    vestingEnd: dateNow + 20 * minute
   }
 }
 
 const year1 = {
-  vestingBegin: Date.now(),
-  vestingCliff: Date.now(),
-  vestingEnd: Date.now() + year
+  vestingBegin: dateNow,
+  vestingCliff: dateNow,
+  vestingEnd: dateNow + year
 }
 
 const year2 = {
-  vestingBegin: Date.now() + year,
-  vestingCliff: Date.now() + year,
-  vestingEnd: Date.now() + 2 * year
+  vestingBegin: dateNow + year,
+  vestingCliff: dateNow + year,
+  vestingEnd: dateNow + 2 * year
 }
 const year3 = {
-  vestingBegin: Date.now() + 2 * year,
-  vestingCliff: Date.now() + 2 * year,
-  vestingEnd: Date.now() + 3 * year
+  vestingBegin: dateNow + 2 * year,
+  vestingCliff: dateNow + 2 * year,
+  vestingEnd: dateNow + 3 * year
 }
 const year4 = {
-  vestingBegin: Date.now() + 3 * year,
-  vestingCliff: Date.now() + 3 * year,
-  vestingEnd: Date.now() + 4 * year
+  vestingBegin: dateNow + 3 * year,
+  vestingCliff: dateNow + 3 * year,
+  vestingEnd: dateNow + 4 * year
 }
 
 module.exports = [
