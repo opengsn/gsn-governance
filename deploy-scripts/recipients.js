@@ -21,18 +21,20 @@ if (process.env.IS_MAINNET) {
     vestingEnd: dateNow + 4 * year
   }
 } else {
-  // TODO: non-mainnet use very short (30-min) cycles
+  // TODO: non-mainnet use very short (15-min) cycles
   console.warn('=== Using very short vesting period!')
   fullCycle = {
-    vestingBegin: dateNow + 2 * minute,
-    vestingCliff: dateNow + 2 * minute,
-    vestingEnd: dateNow + 20 * minute
+    vestingBegin: dateNow + 10 * minute,
+    vestingCliff: dateNow + 10 * minute,
+    vestingEnd: dateNow + 30 * minute
   }
 }
 
+//first year starts 3 days into the future. all TXs must be mined before this time.
+// (cant deploy TreasuryVesting with vestingBegin in the past)
 const year1 = {
-  vestingBegin: dateNow,
-  vestingCliff: dateNow,
+  vestingBegin: dateNow + 3 * day,
+  vestingCliff: dateNow + 3 * day,
   vestingEnd: dateNow + year
 }
 
