@@ -6,4 +6,5 @@ build/
 /.idea/jsLibraryMappings.xml
 /deploy-scripts/secretMnemonic.txt
 /deploy-scripts/deploy
+/deploy-scripts/mainnet-deploy
 /json-input.json

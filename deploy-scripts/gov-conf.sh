@@ -10,7 +10,7 @@ function fatal {
 # deploy team multisig contract (Gnosis Safe proxy can be created in GUI first)
 # cd safe-contracts
 
-export DEPLOY_DIR=`pwd`/deploy
+export DEPLOY_DIR=`pwd`/mainnet-deploy
 mkdir -p $DEPLOY_DIR
 
 #development, rinkeby, mainnet
@@ -18,16 +18,15 @@ mkdir -p $DEPLOY_DIR
 export NETWORK='development'
 #export NETWORK='rinkeby'
 
-export GAS_PRICE_GWEI=10
+export GAS_PRICE_GWEI=150
 export GAS_LIMIT=5000000
 
 # configure mainnet settings (non-debug Timelock, Governor)
 export IS_MAINNET=1
 
 # force using mnemonic file
-export MNEMONIC_FILE=`pwd`/secretMnemonic.txt
-
-#test -r $MNEMONIC_FILE || fatal "no such file: MNEMONIC_FILE=$MNEMONIC_FILE"
+#export MNEMONIC_FILE=`pwd`/secretMnemonic.txt
+export MNEMONIC_FILE=~/.secret/mainnet-mnemonic.txt
 
 export GSN_OUT=$DEPLOY_DIR/gsn-out.sh
 export AIRDROP_OUT=$DEPLOY_DIR/airdrop-out.sh
@@ -56,13 +55,14 @@ export GOV_OUT=$DEPLOY_DIR/gov-out.sh
 
 # for testing, can set DNS names to any unique name under surge.sh
 AIRDROP_DNS=gsn-airdrop.surge.sh
-VOTE_DNS=gsn-voting.surge.sh
+#VOTE_DNS=gsn-voting.surge.sh
+VOTE_DNS=voting.opengsn.org
 
 # vesting is applied to 90% of allocated tokens, and 10% of tokens are released instantly
 
 # team
 
-export TEAM_MULTISIG='0x63c0A0f420A5aA2d803Ea30d35f961baf33DdFc1'
+export TEAM_MULTISIG='0xFfD0c7CeE868A4B9C73d644360f1dbeE86AD6552'
 export TEAM_AMOUNT='17.55' # amounts are in % of supply
 export TEAM_AMOUNT_NO_VEST='1.95'
 
@@ -78,11 +78,11 @@ export TEAM_AMOUNT_NO_VEST='1.95'
 
 # ecosystem and charity
 
-export CHARITY_MULTISIG='0x28a8746e75304c0780E011BEd21C72cD78cd535E'
+export CHARITY_MULTISIG='0x4449c2916e53f6337fd8c776f95e37e9365f005a'
 export CHARITY_AMOUNT='0.9'
 export CHARITY_AMOUNT_NO_VEST='0.1'
 
-export ECOSYSTEM_MULTISIG='0x3E5e9111Ae8eB78Fe1CC3bb8915d5D461F3Ef9A9'
+export ECOSYSTEM_MULTISIG='0x164cb3676F4A465403F269730F0B4dE0E9D47298'
 export ECOSYSTEM_AMOUNT='4.5'
 export ECOSYSTEM_AMOUNT_NO_VEST='0.5'
 
