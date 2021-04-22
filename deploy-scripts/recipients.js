@@ -30,11 +30,11 @@ if (process.env.IS_MAINNET) {
   }
 }
 
-//first year starts 3 days into the future. all TXs must be mined before this time.
+//first year starts 14 days into the future. all TXs must be mined before this time.
 // (cant deploy TreasuryVesting with vestingBegin in the past)
 const year1 = {
-  vestingBegin: dateNow + 3 * day,
-  vestingCliff: dateNow + 3 * day,
+  vestingBegin: dateNow + 14 * day,
+  vestingCliff: dateNow + 14 * day,
   vestingEnd: dateNow + year
 }
 
@@ -139,7 +139,7 @@ module.exports = [
     recipient: process.env.CHARITY_MULTISIG,
     vestingAmount: process.env.CHARITY_AMOUNT,
     canVote: false,
-    canBeCancelled: false,
+    canBeCancelled: true,
     vestingBegin: fullCycle.vestingBegin,
     vestingCliff: fullCycle.vestingCliff,
     vestingEnd: fullCycle.vestingEnd,

@@ -59,7 +59,7 @@ function printableTXData(obj) {
         let val = printObj[key]
         if (!val) continue
         let name = addrToName[val.toString().toLowerCase()]
-        if (name && val.match(/0x.{40}/)) {
+        if (name && val.toString().match(/0x.{40}/)) {
             printObj[key] = `${name} (${val})`
         }
     }
@@ -131,7 +131,7 @@ options:
             let rawTx = sendtx.params[0]
             const decoded = decoder.decodeTx(rawTx)
             const {nonce, to, data, value, gasPrice, gasLimit, v, r, s} = decoded
-            console.log('tx', i + 1, '/', sendCommands.length, 'nonce=', nonce)
+            console.log('tx', i + 1, '/', sendCommands.length, 'nonce=', nonce, sendtx.id)
             if (options.nonce && nonce < options.nonce) {
                 continue
             }
