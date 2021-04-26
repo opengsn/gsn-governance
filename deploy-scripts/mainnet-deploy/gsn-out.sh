@@ -1,0 +1,8 @@
+#network development
+export GSN_NETWORK="--network localhost"
+export RelayHubAddress="0x9e59Ea5333cD4f402dAc320a04fafA023fe3810D"
+export ForwarderAddress="0xAa3E82b4c4093b4bA13Cb5714382C99ADBf750cA"
+export PaymasterAddress="0x0000000000000000000000000000000000000000"
+export StakeManagerAddress="0x2D5304836e29242399479e44ff916bc1ba2a1999"
+export PenalizerAddress="0xeB230bF62267E94e657b5cbE74bdcea78EB3a5AB"
+export VersionRegistryAddress="0x97B6ebd38f2000B6E446DE24D9805606b882A1C5"
