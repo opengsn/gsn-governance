@@ -18,7 +18,7 @@ mkdir -p $DEPLOY_DIR
 export NETWORK='development'
 #export NETWORK='rinkeby'
 
-export GAS_PRICE_GWEI=40
+export GAS_PRICE_GWEI=50
 export GAS_LIMIT=1000000
 
 # configure mainnet settings (non-debug Timelock, Governor)

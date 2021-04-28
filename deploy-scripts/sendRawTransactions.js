@@ -151,7 +151,7 @@ options:
 
             if (!checkNonce) {
                 checkNonce = true
-                console.log('sender=', from, 'nonce=', await web3.eth.getTransactionCount(from))
+                console.log('sender=', from, 'nonce=', await web3.eth.getTransactionCount(from), await web3.eth.getTransactionCount(from,'pending'))
             }
             let gasEstimation
             if (!options.noestimate) {
@@ -183,7 +183,11 @@ options:
                     await prompt("press ENTER to send")
                 }
                 console.log('=== sending ...')
-                const ret = await web3.eth.sendSignedTransaction(rawTx)
+                const ret = await new Promise((resolve,reject)=>web3.eth.sendSignedTransaction(rawTx)
+                  .on('transactionHash', resolve)
+                  .once('confirmation', ()=>console.log( 'tx confirmed ', nonce))
+                  .once('error', (err)=>{console.error(err); reject();}))
+
                 console.log('\rsend ret=', ret)
             }
             if (options.once)
