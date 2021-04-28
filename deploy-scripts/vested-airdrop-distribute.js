@@ -72,7 +72,7 @@ module.exports = async function (callback) {
       console.log('== writing addresses to',outfile)
       fs.writeFileSync(outfile,
         `# network ${process.env.NETWORK} mainnet=${process.env.IS_MAINNET}\n` +
-        Object.entries(outputs).map(([k,v])=>`export ${k}="${v}"`).join('\n'))
+        Object.entries(outputs).map(([k,v])=>`export ${k.replace(/[ \/]+/g,'_')}="${v}"`).join('\n'))
     }
 
     const deployerBalance2 = await gsnToken.balanceOf(accounts[0])

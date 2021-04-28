@@ -90,15 +90,43 @@ module.exports = async function status (callback) {
       'DEBRIS__TOPPLE',
       'VESTER_DEBRIS_TOPPLE',
       'PEOPLE_EMBARK',
-      'VESTER_PEOPLE_EMBARK'
+      'VESTER_PEOPLE_EMBARK',
+      "VESTER_REDDIT",
+      "VESTER_GOOD_ELDER",
+      "VESTER_AWARE_INSPIRE",
+      "VESTER_OPENZEPPELIN",
+      "VESTER_ETHGLOBAL",
+      "VESTER_AUGUR",
+      "VESTER_DEBRIS_TOPPLE2",
+      "VESTER_ENS",
+      "VESTER_GNOSIS",
+      "VESTER_SHAPESHIFT",
+      "VESTER_LOOPRING",
+      "VESTER_INFURA",
+      "VESTER_POOLTOGETHER",
+      "VESTER_RISEWORKS",
+      "VESTER_BURNERWALLET",
+      "VESTER_UMBRA",
+      "VESTER_NIFTYINK",
+      "VESTER_CAPTAIN_BASKET",
+      "VESTER_CHAINSAFE",
+      "VESTER_WALNUT_UNUSUAL",
+      "VESTER_INSIDE_DEBATE",
+      "VESTER_CREW_ZONE",
+      "VESTER_PULP_AREA",
+      "VESTER_RIGHT_FAVORITE",
+      "VESTER_PRESENT_LOGIC",
+      "VESTER_REOPEN_RELEASE",
+      "VESTER_LUXURY_DIZZY",
+      "VESTER_RURAL_TRIGGER",
     ]
 
     const date = x => new Date(x * 1000).toLocaleDateString()
-    tok = await GSNToken.at(process.env.GSNTOKEN)
-    totalSupply = await tok.totalSupply()
-    total = fromWei(totalSupply)
-    headerSet = new Set()
-    results = await Promise.all(names.map(async (name) => {
+    const tok = await GSNToken.at(process.env.GSNTOKEN)
+    const totalSupply = await tok.totalSupply()
+    const total = fromWei(totalSupply)
+    let headerSet = new Set()
+    const results = await Promise.all(names.map(async (name) => {
       const addr = process.env[name]
       if (!addr) {
         console.log(`${name}: not deployed yet `)
@@ -120,8 +148,8 @@ module.exports = async function status (callback) {
         const govApproval = parseInt(allowance) > parseInt(balance)
         vestInfo = { govApproval, canDelegate, vestingAmount, vestingBegin, vestingCliff, vestingEnd, recipient, votes }
       }
-      shortaddr = useFullAddress ? addr : addr.slice(2, 6) + '..' + addr.slice(-4)
-      result = { name, addr: shortaddr, balance, votes, ...vestInfo }
+      const shortaddr = useFullAddress ? addr : addr.slice(2, 6) + '..' + addr.slice(-4)
+      const result = { name, addr: shortaddr, balance, votes, ...vestInfo }
       Object.keys(result).forEach(h => {
         headerSet.add(h)
         width[h] = maxlen(width[h], result[h], h)
@@ -129,7 +157,7 @@ module.exports = async function status (callback) {
       return result
     }))
 
-    headers = Array.from(headerSet)
+    const headers = Array.from(headerSet)
     if (useCsv) {
       console.log(headers.map(h => pad(h, h)).join(', '))
       results.forEach(line => { if (line) console.log(headers.map(h => pad(h, line[h])).join(', '))})
