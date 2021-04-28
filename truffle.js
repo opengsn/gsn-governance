@@ -3,7 +3,7 @@ let mnemonic
 
 if ( process.env.MNEMONIC_FILE ) {
   console.log( `== reading mnemonic file: ${process.env.MNEMONIC_FILE}`)
-  mnemonic = require('fs').readFileSync(process.env.MNEMONIC_FILE, 'utf-8')
+  mnemonic = require('fs').readFileSync(process.env.MNEMONIC_FILE, 'utf-8').replace(/(\r\n|\n|\r)/gm, "")
 }
 
 module.exports = {
