@@ -10,8 +10,7 @@ module.exports = async function (callback) {
   try {
     console.log('=== distributing unvested tokens ===')
     const accounts = await web3.eth.getAccounts()
-    const timelock = await Timelock.deployed()
-    const gsnToken = await GSNToken.deployed()
+    const gsnToken = await GSNToken.at(process.env.GSNTOKEN)
 
     // amounts are given in % of supply
     const totalSupply = await gsnToken.totalSupply()
@@ -39,7 +38,7 @@ module.exports = async function (callback) {
     }
 
     // non-vested funds
-    await transfer(process.env.COMMUNITY_NO_VEST, timelock.address, 'community')
+    await transfer(process.env.COMMUNITY_NO_VEST, process.env.TIMELOCK, 'community')
     // await transfer(process.env.AIRDROP_AMOUNT, process.env.AIRDROP, 'airdrop')
 
     // pre-vested funds

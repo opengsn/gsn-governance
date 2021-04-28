@@ -20,27 +20,34 @@ function pad (title, val) {
   return ((val || '')).toString().padEnd(width[title], ' ')
 }
 
+function getAddrName (addr) {
+  for (const e in process.env) {
+    if (process.env[e].toLowerCase() === addr.toLowerCase())
+      return e
+  }
+}
+
 module.exports = async function status (callback) {
   try {
     //NOTE: we parse also truffle options...
     const args = minimist(process.argv.slice(2), {
       alias: {
         csv: 'c',
+        tsv: 't',
         json: 'j',
         vestInfo: 'v',
         fullAddress: 'a',
-        percent: '%'
       }
     })
 
     const useJson = args.json
     const useCsv = args.csv
+    const useTsv = args.tsv
     const useVestInfo = args.vestInfo
     const useFullAddress = args.fullAddress
-    const usePct = args.percent
 
-    if (!useJson && !useCsv) {
-      console.log(`usage: truffle exec tokenstatus {--json|--csv} [--vestInfo, --fullAddress]`)
+    if (!useJson && !useCsv && !useTsv) {
+      console.log(`usage: truffle exec tokenstatus {--json|--csv|--tsv} [--vestInfo, --fullAddress]`)
       process.exit()
     }
 
@@ -64,14 +71,39 @@ module.exports = async function status (callback) {
       'VESTER_COMMUNITYYEAR2',
       'VESTER_COMMUNITYYEAR3',
       'VESTER_COMMUNITYYEAR4',
+      'PRETTY_AISLE',
+      'VESTER_PRETTY_AISLE',
+      'COFFEE_IMITATE',
+      'VESTER_COFFEE_IMITATE',
+      'EXPLAIN_SAUCE',
+      'VESTER_EXPLAIN_SAUCE',
+      'SKIRT_DANCE',
+      'VESTER_SKIRT_DANCE',
+      'GRANT_DRAW',
+      'VESTER_GRANT_DRAW',
+      'MOTION_TONIGHT',
+      'VESTER_MOTION_TONIGHT',
+      'WORRY__OFFICE',
+      'VESTER_WORRY_OFFICE',
+      'STEM__ONLINE',
+      'VESTER_STEM_ONLINE',
+      'DEBRIS__TOPPLE',
+      'VESTER_DEBRIS_TOPPLE',
+      'PEOPLE_EMBARK',
+      'VESTER_PEOPLE_EMBARK'
     ]
 
     const date = x => new Date(x * 1000).toLocaleDateString()
     tok = await GSNToken.at(process.env.GSNTOKEN)
-    total = fromWei(await tok.totalSupply())
+    totalSupply = await tok.totalSupply()
+    total = fromWei(totalSupply)
     headerSet = new Set()
     results = await Promise.all(names.map(async (name) => {
       const addr = process.env[name]
+      if (!addr) {
+        console.log(`${name}: not deployed yet `)
+        return
+      }
       let vestInfo = {}
       const balance = await tok.balanceOf(addr).then(fromWei)
       let votes = await tok.getCurrentVotes(addr).then(fromWei)
@@ -82,18 +114,14 @@ module.exports = async function status (callback) {
         const vestingCliff = date(await vester.vestingCliff())
         const vestingEnd = date(await vester.vestingEnd())
         const canDelegate = (await vester.canDelegate()).toString()
-        vestInfo = { vestingAmount, vestingBegin, vestingCliff, vestingEnd, votes, canDelegate }
+        const allowance = await tok.allowance(addr, timelockAddress).then(fromWei)
+        const r = await vester.recipient()
+        const recipient = getAddrName(r) || r
+        const govApproval = parseInt(allowance) > parseInt(balance)
+        vestInfo = { govApproval, canDelegate, vestingAmount, vestingBegin, vestingCliff, vestingEnd, recipient, votes }
       }
-      const allowance = await tok.allowance(addr, timelockAddress).then(fromWei)
-      govApproval = parseInt(allowance) > parseInt(balance)
       shortaddr = useFullAddress ? addr : addr.slice(2, 6) + '..' + addr.slice(-4)
-      result = { name, addr: shortaddr }
-      if (usePct) {
-        result = { ...result, balance, 'bal%': balance * 100 / total, votes, 'votes%': votes*100 / total }
-      } else {
-        result = { ...result, balance, votes }
-      }
-      result = { ...result, ...vestInfo }
+      result = { name, addr: shortaddr, balance, votes, ...vestInfo }
       Object.keys(result).forEach(h => {
         headerSet.add(h)
         width[h] = maxlen(width[h], result[h], h)
@@ -104,7 +132,11 @@ module.exports = async function status (callback) {
     headers = Array.from(headerSet)
     if (useCsv) {
       console.log(headers.map(h => pad(h, h)).join(', '))
-      results.forEach(line => console.log(headers.map(h => pad(h, line[h])).join(', ')))
+      results.forEach(line => { if (line) console.log(headers.map(h => pad(h, line[h])).join(', '))})
+    }
+    if (useTsv) {
+      console.log(headers.join('\t'))
+      results.forEach(line => { if (line) console.log(headers.map(h => line[h]).join('\t'))})
     }
     if (useJson) {
       console.log(results)
