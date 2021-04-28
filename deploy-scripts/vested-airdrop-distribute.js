@@ -2,7 +2,7 @@ const BN = require('bn.js')
 const assert = require('assert')
 const { fromWei, toWei } = require('web3-utils')
 const fs = require('fs')
-const airdropVesting = require('./vested-airdrop-recipients')
+const airdropVesting = require('../../gsn-airdrop/packages/merkle-distributor/build/vested-airdrop.json')
 
 const GSNToken = artifacts.require('GSNToken')
 const TreasuryVester = artifacts.require('TreasuryVester')
@@ -33,7 +33,8 @@ module.exports = async function (callback) {
     let distributedTokens = toWei('0', 'ether')
 
     async function transfer (amount, destination, name) {
-      const amountWei = toWei(amount, 'ether')
+      // NOTE: generated file contains values already in WEI!
+      const amountWei = amount
       distributedTokens = new BN(distributedTokens).add(new BN(amountWei))
       const balanceBefore = await gsnToken.balanceOf(destination)
       if (!balanceBefore.eqn(0)) {
@@ -48,21 +49,21 @@ module.exports = async function (callback) {
 
     // vested funds
     for (const sponsor of airdropVesting) {
-      console.log(`=== deploying vester for ${sponsor.name}`)
+      console.log(`=== deploying vester for ${sponsor.recipientName}`)
       const vester = await TreasuryVester.new(
         gsnToken.address,
-        sponsor.address,
+        sponsor.recipientAddress,
         // NOTE: can not be cancelled
         '0x0000000000000000000000000000000000000000',
-        toWei(sponsor.amount),
+        sponsor.vestingAmount,
         fullCycle.vestingBegin,
         fullCycle.vestingCliff,
         fullCycle.vestingEnd,
         // NOTE: can delegate and vote
         true)
-      await transfer(sponsor.amount, vester.address, sponsor.name + ' Vesting Contract')
+      await transfer(sponsor.vestingAmount, vester.address, sponsor.recipientName + ' Vesting Contract')
 
-      outputs["VESTER_"+sponsor.name.toUpperCase()] = vester.address
+      outputs["VESTER_"+sponsor.recipientName.toUpperCase()] = vester.address
     }
     console.log(`finished distribution to airdrop vesting contracts (${distributedTokens} tokens), now distributing non-vested`)
 
