@@ -2,10 +2,19 @@ var HDWalletProvider = require('truffle-hdwallet-provider')
 let mnemonic
 
 if ( process.env.MNEMONIC_FILE ) {
-  console.log( `== reading mnemonic file: ${process.env.MNEMONIC_FILE}`)
+  console.error( `== reading mnemonic file: ${process.env.MNEMONIC_FILE}`)
   mnemonic = require('fs').readFileSync(process.env.MNEMONIC_FILE, 'utf-8').replace(/(\r\n|\n|\r)/gm, "")
 }
 
+function network( url, network_id ) {
+  return {
+     provider: function () {
+       return new HDWalletProvider(mnemonic, url)
+     },
+     url,
+     network_id
+  }
+}
 module.exports = {
   compilers: {
     solc: {
@@ -41,6 +50,7 @@ module.exports = {
       skipDryRun: true,
       network_id: 1
     },
+    mumbai: network( 'https://matic-mumbai.chainstacklabs.com', 80001 ),
     development: {
       // we run Ganache with chainID 1 to test the react app; no need for a dry run
       skipDryRun: true,

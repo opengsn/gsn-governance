@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -xe
 cd `dirname $0`
 
 #parameter is configuration file
@@ -6,12 +6,19 @@ source $1
 source $GSN_OUT
 
 #owner is the address of our mnemonic file:
-export RELAY_OWNER=`truffle exec --network $NETWORK senderaddr.js|sed -n 's/SENDER=//p'`
+export RELAY_OWNER=`truffle exec --network $NETWORK senderaddr.js|perl -ne 'print $1 if /SENDER=(.*)/'`
 
-if [ $NETWORK == "development" ]; then
-  NODEURL="http://$RELAY_HOST:8545"
-else
-  NODEURL="https://$NETWORK.infura.io/v3/$INFURA_ID"
+if [ -z "$RELAY_OWNER" ]; then
+	echo ERROR unable tot find owner address
+	exit 1
+fi
+
+if [ -z "$NODEURL" ]; then
+  if [ $NETWORK == "development" ]; then
+    NODEURL="http://$RELAY_HOST:8545"
+  else
+    NODEURL="https://$NETWORK.infura.io/v3/$INFURA_ID"
+  fi
 fi
 
 mkdir -p $DEPLOY_DIR/relay/config
@@ -69,10 +76,10 @@ RELAYDC_TAG=:2.2.0  ../../gsn/dockers/relaydc/rdc $RELAY_HOST up -d
   echo "   ../../gsn/dockers/relaydc/rdc $RELAY_HOST logs -t"
 
   echo "waiting for http service to start"
-  while ! ../../gsn/dockers/relaydc/rdc $RELAY_HOST logs|grep "$RELAY_HOST verified"; do sleep 5; done
+  while ! ../../gsn/dockers/relaydc/rdc $RELAY_HOST logs|grep "Signed certificate for $RELAY_HOST"; do sleep 5; done
   sleep 5
 
-  node ../../gsn/packages/cli/dist/commands/gsn.js relayer-register --network $NETWORK --gasPrice $GAS_PRICE_GWEI --relayUrl $RELAY_URL -m $MNEMONIC_FILE
+  node ../../gsn/packages/cli/dist/commands/gsn.js relayer-register --network $NODEURL --gasPrice $GAS_PRICE_GWEI --relayUrl $RELAY_URL -m $MNEMONIC_FILE --funds 0.5 --from $RELAY_OWNER
 
 fi
 

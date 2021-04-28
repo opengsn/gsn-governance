@@ -6,17 +6,21 @@ cd `dirname $0`
 source $1
 cd ../../gsn
 
-if [ $NETWORK != 'development' ] ; then
-    GSN_NETWORK="--network $NETWORK"
+if [ -n "$NODEURL" ]; then
+  GSN_NETWORK="--network $NODEURL"
 else
-    GSN_NETWORK="--network localhost"
+  if [ $NETWORK != 'development' ] ; then
+      GSN_NETWORK="--network $NETWORK"
+  else
+      GSN_NETWORK="--network localhost"
+  fi
 fi
 
 if [ -n "$MNEMONIC_FILE" ]; then
     GSN_MNEMONIC="--mnemonic $MNEMONIC_FILE"
 fi
 
-node ./packages/cli/dist/commands/gsn.js deploy --yes --gasPrice $GAS_PRICE_GWEI --registryHubId hub $GSN_NETWORK $GSN_MNEMONIC
+node ./packages/cli/dist/commands/gsn.js deploy --yes --gasPrice $GAS_PRICE_GWEI --registryHubId hub --testPaymaster $GSN_NETWORK $GSN_MNEMONIC
 
 (
 echo "#network $NETWORK"
