@@ -1,0 +1,8 @@
+#network kotti
+export GSN_NETWORK="--network https://kotti.connect.bloq.cloud/v1/roast-blossom-sentence"
+export RelayHubAddress="0xAdB0B519873860F396F8d6642286C179A5A0770D"
+export ForwarderAddress="0x255fc98fE2C2564CF361E6dCD233862f884826E5"
+export PaymasterAddress="0x0000000000000000000000000000000000000000"
+export StakeManagerAddress="0xd5429E7445e88356d9D4191EB5BB5795E9609Bb3"
+export PenalizerAddress="0x904d7aec6687d365C33Cc6250Ac205f98813880a"
+export VersionRegistryAddress="0x581648Bb9dB7e36360B8B551Cdaf23c481f106c3"

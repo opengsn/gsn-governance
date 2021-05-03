@@ -51,6 +51,7 @@ module.exports = {
       network_id: 1
     },
     mumbai: network( 'https://matic-mumbai.chainstacklabs.com', 80001 ),
+    kotti: network( 'https://kotti.connect.bloq.cloud/v1/roast-blossom-sentence', 6 ),
     development: {
       // we run Ganache with chainID 1 to test the react app; no need for a dry run
       skipDryRun: true,
