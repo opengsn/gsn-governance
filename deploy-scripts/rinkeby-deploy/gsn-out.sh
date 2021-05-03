@@ -1,5 +1,6 @@
-#network development
-export GSN_NETWORK="--network localhost"
+#network rinkeby
+# note: created manually due to script crashing!
+
 export RelayHubAddress="0x6650d69225CA31049DB7Bd210aE4671c0B1ca132"
 export ForwarderAddress="0x83A54884bE4657706785D7309cf46B58FE5f6e8a"
 export PaymasterAddress="0x0000000000000000000000000000000000000000"
