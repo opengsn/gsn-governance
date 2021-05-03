@@ -1,7 +1,9 @@
 #!/bin/bash -xe
 
+
 cd `dirname $0`
-source gov-conf.sh
+#parameter is configuration file
+source $1
 cd ../../gsn
 
 if [ $NETWORK != 'development' ] ; then

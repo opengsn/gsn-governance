@@ -1,10 +1,12 @@
 #!/bin/bash -e
 cd `dirname $0`
-echo ==== disabled, for now
-exit 1
 
-source gov-conf.sh
+#parameter is configuration file
+source $1
 source $GSN_OUT
+
+#owner is the address of our mnemonic file:
+export RELAY_OWNER=`truffle exec --network $NETWORK senderaddr.js|sed -n 's/SENDER=//p'`
 
 if [ $NETWORK == "development" ]; then
   NODEURL="http://$RELAY_HOST:8545"
@@ -34,6 +36,9 @@ EOF
 
 if [ $NETWORK == "development" ]; then
 
+echo === develeopment mode incomplete.
+exit 1
+
     # on development server, start docker on localhost
     # (just make sure to use self ip, not 127.0.0.1)
   docker rm -f gsnrelay
@@ -52,6 +57,8 @@ if [ $NETWORK == "development" ]; then
   echo "   docker logs -t -f gsnrelay"
   sleep 5
 
+  node ../../gsn/packages/cli/dist/commands/gsn.js relayer-register --gasPrice $GAS_PRICE_GWEI --relayUrl $RELAY_URL
+
 else
 
   (cd $DEPLOY_DIR/relay; scp -r .env config $RELAY_HOST: )
@@ -65,7 +72,8 @@ RELAYDC_TAG=:2.2.0  ../../gsn/dockers/relaydc/rdc $RELAY_HOST up -d
   while ! ../../gsn/dockers/relaydc/rdc $RELAY_HOST logs|grep "$RELAY_HOST verified"; do sleep 5; done
   sleep 5
 
+  node ../../gsn/packages/cli/dist/commands/gsn.js relayer-register --network $NETWORK --gasPrice $GAS_PRICE_GWEI --relayUrl $RELAY_URL -m $MNEMONIC_FILE
+
 fi
 
-node ../../gsn/packages/cli/dist/commands/gsn.js relayer-register $GSN_NETWORK --gasPrice $GAS_PRICE_GWEI --relayUrl $RELAY_URL
 
