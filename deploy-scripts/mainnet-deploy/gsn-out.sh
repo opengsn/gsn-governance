@@ -6,3 +6,4 @@ export PaymasterAddress="0x0000000000000000000000000000000000000000"
 export StakeManagerAddress="0x2D5304836e29242399479e44ff916bc1ba2a1999"
 export PenalizerAddress="0xeB230bF62267E94e657b5cbE74bdcea78EB3a5AB"
 export VersionRegistryAddress="0x97B6ebd38f2000B6E446DE24D9805606b882A1C5"
+
