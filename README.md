@@ -1,4 +1,6 @@
-# @uniswap/governance
+
+# @opengsn/gsn-governance
 
 Forked from 
-[https://github.com/compound-finance/compound-protocol/tree/v2.8.1](https://github.com/compound-finance/compound-protocol/tree/v2.8.1)
+
+[https://github.com/uniswap/governance](https://github.com/uniswap/governance/tree/v1.0.2)
